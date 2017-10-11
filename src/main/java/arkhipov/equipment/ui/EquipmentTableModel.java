@@ -67,7 +67,6 @@ public class EquipmentTableModel extends AbstractTableModel {
     public Object getValueAt(int row, int column)
     {
         Appliance appliance = appliances.get(row);
-
         switch (column)
         {
             case 0: return appliance.getSerialNumber();
@@ -100,13 +99,13 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
         applianceRepository.save(appliance);
         appliances.set(row, appliance);
-
         fireTableCellUpdated(row, column);
     }
 
-    public void removeRow(int row) {
-        applianceRepository.delete(appliances.get(row));
-        appliances.remove(row);
+    public void removeRow(int row, int serialNumber) {
+        int index = searchApplianceIndex(serialNumber);
+        applianceRepository.delete(appliances.get(index));
+        appliances.remove(index);
         fireTableRowsDeleted(row, row);
     }
 
@@ -114,5 +113,10 @@ public class EquipmentTableModel extends AbstractTableModel {
         applianceRepository.save(appliance);
         appliances.add(appliance);
         fireTableDataChanged();
+    }
+
+    private int searchApplianceIndex(int serialNumber) {
+        Appliance appliance = appliances.stream().filter(a -> a.getSerialNumber() == serialNumber).findFirst().orElse(null);
+        return appliances.indexOf(appliance);
     }
 }

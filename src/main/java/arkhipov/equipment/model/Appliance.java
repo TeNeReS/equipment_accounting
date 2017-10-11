@@ -15,6 +15,7 @@ public class Appliance {
 
     @Column(name = "inventory_number")
     private int inventoryNumber;
+
     private String name;
 
     @Column(name = "last_verification_date")
@@ -26,6 +27,7 @@ public class Appliance {
     @Column(name = "current_condition")
     @Enumerated(EnumType.STRING)
     private TechnicalCondition currentCondition;
+
     private String note;
 
     public Appliance() {}

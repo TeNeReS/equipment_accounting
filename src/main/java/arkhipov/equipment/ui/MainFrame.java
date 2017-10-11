@@ -45,8 +45,9 @@ public class MainFrame extends JFrame {
         JButton deleteButton = new JButton("Удалить");
         deleteButton.addActionListener (arg0 -> {
             try {
-                int selectedPlanet = table.getSelectedRow();
-                model.removeRow(selectedPlanet);
+                int selectedRow = table.getSelectedRow();
+                int serialNumber = (int) table.getValueAt(selectedRow, 0);
+                model.removeRow(selectedRow, serialNumber);
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -60,8 +61,8 @@ public class MainFrame extends JFrame {
         sorter.setSortKeys(sortKeys);
 
         nameFilter = new JTextField(1);
-        nameFilter.setMaximumSize(new Dimension(500, 20));
-        JLabel l1 = new JLabel("Фильтровать по названию:", SwingConstants.TRAILING);
+        nameFilter.setMaximumSize(new Dimension(500, 25));
+        JLabel nameFilterLabel = new JLabel("Фильтровать по названию:");
         nameFilter.getDocument().addDocumentListener(
                 new DocumentListener() {
                     public void changedUpdate(DocumentEvent e) {
@@ -74,22 +75,25 @@ public class MainFrame extends JFrame {
                         newFilter();
                     }
                 });
-        l1.setLabelFor(nameFilter);
+        nameFilterLabel.setLabelFor(nameFilter);
 
         conditionFilter = new JComboBox<>(new String[]{"", TechnicalCondition.WORKABLE.toString(), TechnicalCondition.FAULTY.toString(), TechnicalCondition.SERVICEABLE.toString()});
-        conditionFilter.setMaximumSize(new Dimension(500, 20));
-        JLabel l2 = new JLabel("Фильтровать по тех. сост.:", SwingConstants.TRAILING);
-        l2.setLabelFor(nameFilter);
+        conditionFilter.setMaximumSize(new Dimension(500, 25));
+        JLabel conditionFilterLabel = new JLabel("Фильтровать по тех. сост.:");
+        conditionFilter.addActionListener(e -> newFilter());
+        conditionFilterLabel.setLabelFor(nameFilter);
 
         tablePanel.add(pane);
 
-        toolPanel.add(addButton);
-        toolPanel.add(Box.createRigidArea(new Dimension(0, 50)));
-        toolPanel.add(deleteButton);
-        toolPanel.add(l1);
+        toolPanel.add(nameFilterLabel);
         toolPanel.add(nameFilter);
-        toolPanel.add(l2);
+        toolPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        toolPanel.add(conditionFilterLabel);
         toolPanel.add(conditionFilter);
+        toolPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+        toolPanel.add(addButton);
+        toolPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        toolPanel.add(deleteButton);
 
         mainPanel.add(tablePanel);
         mainPanel.add(toolPanel);
@@ -106,7 +110,7 @@ public class MainFrame extends JFrame {
         } catch (java.util.regex.PatternSyntaxException e) {
             return;
         }
-        RowFilter<EquipmentTableModel,Object> serviceFilter = RowFilter.andFilter(rf);
+        RowFilter<EquipmentTableModel, Object> serviceFilter = RowFilter.andFilter(rf);
         sorter.setRowFilter(serviceFilter);
     }
 }
