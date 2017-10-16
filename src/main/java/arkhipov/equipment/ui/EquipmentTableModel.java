@@ -1,11 +1,9 @@
 package arkhipov.equipment.ui;
 
 import arkhipov.equipment.model.Appliance;
-import arkhipov.equipment.model.TechnicalCondition;
 import arkhipov.equipment.repository.ApplianceRepository;
 
 import javax.swing.table.AbstractTableModel;
-import java.text.ParseException;
 import java.util.ArrayList;
 
 import static arkhipov.equipment.EquipmentAccounting.DATE_FORMAT;
@@ -53,17 +51,6 @@ public class EquipmentTableModel extends AbstractTableModel {
     }
 
     @Override
-    public boolean isCellEditable(int row, int column)
-    {
-        switch (column)
-        {
-            case 0: return false;
-            case 2: return false;
-            default: return true;
-        }
-    }
-
-    @Override
     public Object getValueAt(int row, int column)
     {
         Appliance appliance = appliances.get(row);
@@ -80,38 +67,23 @@ public class EquipmentTableModel extends AbstractTableModel {
         }
     }
 
-    @Override
-    public void setValueAt(Object value, int row, int column)
-    {
-        Appliance appliance = appliances.get(row);
-        switch (column)
-        {
-            case 1: appliance.setInventoryNumber((Integer) value); break;
-            case 3:
-                try {
-                    appliance.setLastVerificationDate(DATE_FORMAT.parse((String) value));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                } break;
-            case 4: appliance.setResponsiblePerson((String) value); break;
-            case 5: appliance.setCurrentCondition(TechnicalCondition.valueOf((String) value)); break;
-            case 6: appliance.setNote((String) value); break;
-        }
-        applianceRepository.save(appliance);
-        appliances.set(row, appliance);
-        fireTableCellUpdated(row, column);
-    }
-
     public void removeRow(int row, int serialNumber) {
         int index = searchApplianceIndex(serialNumber);
         applianceRepository.delete(appliances.get(index));
         appliances.remove(index);
-        fireTableRowsDeleted(row, row);
+        fireTableDataChanged();
     }
 
     public void addRow(Appliance appliance) {
         applianceRepository.save(appliance);
         appliances.add(appliance);
+        fireTableDataChanged();
+    }
+
+    public void editRow(Appliance appliance) {
+        int index = searchApplianceIndex(appliance.getSerialNumber());
+        applianceRepository.save(appliance);
+        appliances.set(index, appliance);
         fireTableDataChanged();
     }
 

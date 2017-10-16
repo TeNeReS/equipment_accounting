@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainFrame extends JFrame {
-    private EquipmentTableModel model;
     private JTable table;
     private JTextField nameFilter;
     private JComboBox<String> conditionFilter;
@@ -22,7 +21,6 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        this.model = model;
         table = new JTable(model);
 
         JScrollPane pane = new JScrollPane(table);
@@ -36,6 +34,12 @@ public class MainFrame extends JFrame {
         JPanel toolPanel = new JPanel();
         toolPanel.setLayout(new BoxLayout(toolPanel, BoxLayout.PAGE_AXIS));
 
+        JButton editButton = new JButton("Редактировать прибор");
+        editButton.addActionListener(e -> {
+            EditForm editForm = new EditForm(model, table, table.getSelectedRow());
+            editForm.setVisible(true);
+        });
+
         JButton addButton = new JButton("Добавить прибор");
         addButton.addActionListener(e -> {
             AddForm addForm = new AddForm(model);
@@ -48,7 +52,6 @@ public class MainFrame extends JFrame {
                 int selectedRow = table.getSelectedRow();
                 int serialNumber = (int) table.getValueAt(selectedRow, 0);
                 model.removeRow(selectedRow, serialNumber);
-
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -91,6 +94,8 @@ public class MainFrame extends JFrame {
         toolPanel.add(conditionFilterLabel);
         toolPanel.add(conditionFilter);
         toolPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+        toolPanel.add(editButton);
+        toolPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         toolPanel.add(addButton);
         toolPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         toolPanel.add(deleteButton);
