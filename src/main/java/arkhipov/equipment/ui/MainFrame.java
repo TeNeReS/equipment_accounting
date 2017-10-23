@@ -36,7 +36,10 @@ public class MainFrame extends JFrame {
 
         JButton editButton = new JButton("Редактировать прибор");
         editButton.addActionListener(e -> {
-            EditForm editForm = new EditForm(model, table, table.getSelectedRow());
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow == -1)
+                return;
+            EditForm editForm = new EditForm(model, table, selectedRow);
             editForm.setVisible(true);
         });
 
@@ -47,14 +50,12 @@ public class MainFrame extends JFrame {
         });
 
         JButton deleteButton = new JButton("Удалить");
-        deleteButton.addActionListener (arg0 -> {
-            try {
-                int selectedRow = table.getSelectedRow();
-                int serialNumber = (int) table.getValueAt(selectedRow, 0);
-                model.removeRow(selectedRow, serialNumber);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        deleteButton.addActionListener (e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow == -1)
+                return;
+            int serialNumber = (int) table.getValueAt(selectedRow, 0);
+            model.removeRow(selectedRow, serialNumber);
         });
 
         sorter = new TableRowSorter<>(model);

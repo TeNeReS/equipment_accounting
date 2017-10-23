@@ -34,16 +34,13 @@ public class EquipmentTableModel extends AbstractTableModel {
     }
 
     @Override
-    public String getColumnName(int column)
-    {
+    public String getColumnName(int column) {
         return columnNames[column];
     }
 
     @Override
-    public Class getColumnClass(int column)
-    {
-        switch (column)
-        {
+    public Class getColumnClass(int column) {
+        switch (column) {
             case 0: return Integer.class;
             case 1: return Integer.class;
             default: return String.class;
@@ -51,11 +48,9 @@ public class EquipmentTableModel extends AbstractTableModel {
     }
 
     @Override
-    public Object getValueAt(int row, int column)
-    {
+    public Object getValueAt(int row, int column) {
         Appliance appliance = appliances.get(row);
-        switch (column)
-        {
+        switch (column) {
             case 0: return appliance.getSerialNumber();
             case 1: return appliance.getInventoryNumber();
             case 2: return appliance.getName();
@@ -90,5 +85,9 @@ public class EquipmentTableModel extends AbstractTableModel {
     private int searchApplianceIndex(int serialNumber) {
         Appliance appliance = appliances.stream().filter(a -> a.getSerialNumber() == serialNumber).findFirst().orElse(null);
         return appliances.indexOf(appliance);
+    }
+
+    public ArrayList<Appliance> getAppliances() {
+        return appliances;
     }
 }

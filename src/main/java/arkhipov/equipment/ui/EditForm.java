@@ -18,11 +18,15 @@ public class EditForm extends Form {
         setTitle("Редактирование прибора");
         serialNumber.setText(String.valueOf(table.getValueAt(selectedRow, 0)));
         serialNumber.setEditable(false);
+        serialNumber.setInputVerifier(null);
 
         inventoryNumber.setText(String.valueOf(table.getValueAt(selectedRow, 1)));
+        inventoryNumber.setName("editInventoryNumber");
+        verifier.setInitialValue(String.valueOf(table.getValueAt(selectedRow, 1)));
 
         name.setText(String.valueOf(table.getValueAt(selectedRow, 2)));
         name.setEditable(false);
+        name.setInputVerifier(null);
 
         lastVerificationDate.setText(String.valueOf(table.getValueAt(selectedRow, 3)));
 
@@ -33,6 +37,11 @@ public class EditForm extends Form {
         note.setText(String.valueOf(table.getValueAt(selectedRow, 6)));
 
         saveButton.addActionListener (arg0 -> {
+            for (int i = 0; i < mainPanel.getComponentCount(); i++) {
+                JComponent component = (JComponent) mainPanel.getComponent(i);
+                if (component.getInputVerifier() != null && !component.getInputVerifier().verify(component))
+                    return;
+            }
             try {
                 Appliance newAppliance = new Appliance(Integer.parseInt(serialNumber.getText()),
                         Integer.parseInt(inventoryNumber.getText()),

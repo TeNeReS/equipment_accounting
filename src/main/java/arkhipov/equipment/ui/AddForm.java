@@ -3,6 +3,7 @@ package arkhipov.equipment.ui;
 import arkhipov.equipment.model.Appliance;
 import arkhipov.equipment.model.TechnicalCondition;
 
+import javax.swing.*;
 import java.text.ParseException;
 
 import static arkhipov.equipment.EquipmentAccounting.DATE_FORMAT;
@@ -15,8 +16,12 @@ public class AddForm extends Form {
     public AddForm(EquipmentTableModel model) {
         super(model);
         setTitle("Добавление прибора");
-
         saveButton.addActionListener (arg0 -> {
+            for (int i = 0; i < mainPanel.getComponentCount(); i++) {
+                JComponent component = (JComponent) mainPanel.getComponent(i);
+                if (component.getInputVerifier() != null && !component.getInputVerifier().verify(component))
+                    return;
+            }
             try {
                 Appliance newAppliance = new Appliance(Integer.parseInt(serialNumber.getText()),
                         Integer.parseInt(inventoryNumber.getText()),
